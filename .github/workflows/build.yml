@@ -13,18 +13,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up Arduino CLI
+
+      - name: Install Arduino CLI
         uses: arduino/setup-arduino-cli@v2
         with:
           version: 0.32.1
-      - name: Install ESP8266 core
+
+      - name: Add ESP8266 board index
         run: |
+          arduino-cli config init
+          arduino-cli config set additional_urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
           arduino-cli core update-index
-          arduino-cli core install esp8266:esp8266
+
+      - name: Install ESP8266 core
+        run: arduino-cli core install esp8266:esp8266
+
       - name: Compile Wi-PWN firmware
-        run: |
-          arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2 Wi-PWN/Wi-PWN.ino
-      - name: Export build artifact
+        run: arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2 Wi-PWN/Wi-PWN.ino
+
+      - name: Upload firmware .bin
         uses: actions/upload-artifact@v4
         with:
           name: Wi-PWN-firmware
