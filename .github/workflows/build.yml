@@ -19,13 +19,14 @@ jobs:
         with:
           version: 0.32.1
 
-      - name: Add ESP8266 board index
+      - name: Configure ESP8266 Board Manager
         run: |
+          rm -f ~/.arduino15/arduino-cli.yaml
           arduino-cli config init
-          arduino-cli config set additional_urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
+          arduino-cli config set board_manager.additional_urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
           arduino-cli core update-index
 
-      - name: Install ESP8266 core
+      - name: Install ESP8266 platform
         run: arduino-cli core install esp8266:esp8266
 
       - name: Compile Wi-PWN firmware
